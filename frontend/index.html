@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Chat</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chat { max-width: 600px; margin: 0 auto; }
+        #messages { list-style: none; padding: 0; }
+        #messages li { padding: 8px; margin-bottom: 10px; background-color: #f1f1f1; border-radius: 5px; }
+        #form { display: flex; }
+        #input { flex: 1; padding: 10px; }
+        #button { padding: 10px; }
+    </style>
+</head>
+<body>
+    <div id="chat">
+        <ul id="messages"></ul>
+        <form id="form">
+            <input id="input" autocomplete="off" placeholder="Type a message..." /><button id="button">Send</button>
+        </form>
+    </div>
+    <script>
+        // Connect to WebSocket server
+        const ws = new WebSocket("ws://localhost:8000/ws");
+        console.log("Hello World")
+
+        ws.onmessage = function(event) {
+            // Add the received message to the messages list
+            const msg = event.data;
+            const li = document.createElement("li");
+            li.textContent = msg;
+            document.getElementById("messages").appendChild(li);
+        };
+
+        document.getElementById("form").onsubmit = function(e) {
+            e.preventDefault();
+            const input = document.getElementById("input");
+            ws.send(input.value); // Send message to WebSocket server
+            input.value = ''; // Clear input
+        };
+    </script>
+</body>
+</html>
+
